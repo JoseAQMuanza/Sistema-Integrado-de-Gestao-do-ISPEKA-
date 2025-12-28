@@ -29,6 +29,6 @@
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts",
     "**/*.mts"
-  ],
+, "components/sidebar-components/sidebar-utilities.js", "lib/utilities/departments-utilities.js"  ],
   "exclude": ["node_modules"]
 }
