@@ -95,18 +95,18 @@ export default function Sidebar({ userRole }: { userRole: string }) {
     },
     {
       name: 'Meus Documentos',
-      href: '/staff/document/my',
+      href: '/staff/documents/my',
       icon: <FileText className="w-5 h-5" />,
       role: 'staff'
     }, {
       name: 'Novo Documento',
-      href: '/staff/document/new',
+      href: '/staff/documents/new',
       icon: <FileText className="w-5 h-5" />,
       role: 'staff'
     },
     {
       name: 'Dashboard',
-      href: '/staff/document/dashboard',
+      href: '/staff/dashboard',
       icon: <User className="w-5 h-5" />,
       role: 'staff'
     }
