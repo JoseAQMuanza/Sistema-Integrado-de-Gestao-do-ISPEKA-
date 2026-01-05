@@ -1,59 +1,177 @@
-'use client'
+// components/Sidebar.tsx
+'use client';
 
-import { useState } from 'react'
-import { GraduationCap, Menu, X, } from 'lucide-react'
-import SideBarElementsNavigation from '../sidebar-components/sidebar-elements-navigation'
-import UserProfile from '../sidebar-components/user-profile'
+import { useState } from 'react';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { supabase } from '@/lib/supabase/client';
+import {
+  Settings,
+  LayoutDashboard,
+  FileText,
+  Tags,
+  Briefcase,
+  User,
+  BarChart3,
+  Users,
+  LogOut,
+} from 'lucide-react'
 
 
-export default function Sidebar() {
-  const [isOpen, setIsOpen] = useState(false)
+interface MenuItem {
+  name: string;
+  href: string;
+  icon: React.ReactNode;
+  role: 'staff' | 'admin'
+}
+
+export default function Sidebar({ userRole }: { userRole: string }) {
+  const pathname = usePathname();
+  const [collapsed, setCollapsed] = useState(false);
+
+  const menuItems: MenuItem[] = [
+    // Menu apenas para admin
+    {
+      name: 'Configurações',
+      href: '/admin/configuracao',
+      icon: <Settings className="w-5 h-5" />,
+      role: 'admin'
+    },
+    {
+      name: 'DashBoard',
+      href: '/admin/dashboard',
+      icon: <LayoutDashboard className="w-5 h-5" />,
+      role: 'admin'
+    },
+    {
+      name: 'Todos Documentos',
+      href: '/admin/documents',
+      icon: <FileText className="w-5 h-5" />,
+      role: 'admin'
+    },
+    {
+      name: 'Tipos de Documento',
+      href: '/admin/documents/documents-type',
+      icon: <Tags className="w-5 h-5" />,
+      role: 'admin'
+    },
+    {
+      name: 'Cargos',
+      href: '/admin/possition',
+      icon: <Briefcase className="w-5 h-5" />,
+      role: 'admin'
+    },
+    {
+      name: 'Perfil',
+      href: '/admin/profile',
+      icon: <User className="w-5 h-5" />,
+      role: 'admin'
+    },
+    {
+      name: 'Relatórios',
+      href: '/admin/reports',
+      icon: <BarChart3 className="w-5 h-5" />,
+      role: 'admin'
+    },
+    {
+      name: 'Usuários',
+      href: '/admin/users',
+      icon: <Users className="w-5 h-5" />,
+      role: 'admin'
+    },
+
+    // Menu para staff
+    {
+      name: 'Documentos Públicos',
+      href: '/documents/publics',
+      icon: <FileText className="w-5 h-5" />,
+      role: 'staff'
+    },
+    {
+      name: 'Perfil',
+      href: '/staff/profile',
+      icon: <User className="w-5 h-5" />,
+      role: 'staff'
+    },
+    {
+      name: 'Meus Documentos',
+      href: '/staff/document/my',
+      icon: <FileText className="w-5 h-5" />,
+      role: 'staff'
+    }, {
+      name: 'Novo Documento',
+      href: '/staff/document/new',
+      icon: <FileText className="w-5 h-5" />,
+      role: 'staff'
+    },
+    {
+      name: 'Dashboard',
+      href: '/staff/document/dashboard',
+      icon: <User className="w-5 h-5" />,
+      role: 'staff'
+    }
+  ];
+
+  const filteredMenu = menuItems.filter(item =>
+    (userRole === 'admin' && item.role === 'admin') ||
+    (userRole === 'staff' && item.role === 'staff')
+  );
 
   return (
-    <>
-      {/* Mobile menu button */}
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        className="lg:hidden fixed top-4 left-4 z-50 p-2 rounded-md bg-blue-600 text-white shadow-lg"
-      >
-        {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-      </button>
-
-      {/* Overlay */}
-      {isOpen && (
-        <div
-          className="lg:hidden fixed inset-0 bg-black/50 z-40"
-          onClick={() => setIsOpen(false)}
-        />
-      )}
-
-      {/* Sidebar */}
-      <aside className={`
-        ${isOpen ? 'translate-x-0' : '-translate-x-full'}
-        lg:translate-x-0 fixed lg:static inset-y-0 left-0 z-40
-        w-64 bg-white border-r border-gray-200
-        transition-transform duration-300 ease-in-out
-        flex flex-col
-      `}>
-        {/* Logo */}
-        <div className="p-6 border-b">
-          <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 bg-linear-to-br from-blue-600 to-blue-800 rounded-lg flex items-center justify-center">
-              <GraduationCap className="w-6 h-6 text-white" />
-            </div>
-            <div>
-              <h1 className="text-lg font-bold text-gray-900">SIG-ISPEKA</h1>
-              <p className="text-xs text-gray-500">Gestão Acadêmica</p>
-            </div>
-          </div>
+    <div className={`bg-orange-900 text-white transition-staff duration-300 ${collapsed ? 'w-20' : 'w-64'}`}>
+      <div className="p-4 border-b border-orange-800">
+        <div className="flex items-center justify-between">
+          {!collapsed && (
+            <h1 className="text-xl font-bold">ISPEKA </h1>
+          )}
+          <button
+            onClick={() => setCollapsed(!collapsed)}
+            className="p-2 rounded-lg hover:bg-orange-800"
+          >
+            {collapsed ? '→' : '←'}
+          </button>
         </div>
+        {!collapsed && (
+          <p className="text-white text-sm mt-1">Role: {userRole}</p>
+        )}
+      </div>
 
-        {/* Navigation */}
-        <SideBarElementsNavigation/>
+      <nav className="p-4">
+        <ul className="space-y-2">
+          {filteredMenu.map((item) => {
+            const isActive = pathname === item.href;
+            return (
+              <li key={item.name}>
+                <Link
+                  href={item.href}
+                  className={`flex items-center space-x-3 p-3 rounded-lg transition-colors ${isActive
+                    ? 'bg-orange-600 text-white'
+                    : 'hover:bg-orange-800 text-white'
+                    }`}
+                >
+                  <span className="shrink-0">{item.icon}</span>
+                  {!collapsed && <span>{item.name}</span>}
+                </Link>
+              </li>
+            );
+          })}
+        </ul>
+      </nav>
 
-        {/* User profile */}
-        <UserProfile userName='admin' userEmail='admin.edu.co.ao'/>
-      </aside>
-    </>
-  )
+
+      <div className=" bottom-0 left-0 right-0 border-t border-white">
+        <button
+          onClick={async () => {
+            await supabase.auth.signOut();
+            window.location.href = '/signin';
+          }}
+          className={`flex items-center space-x-3 p-3 w-full rounded-lg hover:bg-orange-800 text-white cursor-pointer  ${collapsed ? 'justify-center' : ''
+            }`}
+        >
+          <LogOut className="w-5 h-5" />
+          {!collapsed && <span>Sair</span>}
+        </button>
+      </div>
+    </div>
+  );
 }
