@@ -1,3 +1,3 @@
-export function DocumentsTypeNewPage() {
+export default function DocumentsTypeNewPage() {
   return <h1>Em Desenvolvimento</h1>
 }
