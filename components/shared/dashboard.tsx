@@ -69,7 +69,15 @@ export default function DashboardPage() {
 
     loadData();
   }, [router]);
-  
+
+  if (!userInfo) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-600"></div>
+      </div>
+    );
+  }
+
   return (
     <div className="flex min-h-screen bg-gray-50">
       <Sidebar userRole='staff'/>        
