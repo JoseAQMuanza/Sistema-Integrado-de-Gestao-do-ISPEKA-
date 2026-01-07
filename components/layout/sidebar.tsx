@@ -82,23 +82,6 @@ export default function Sidebar({ userRole }: { userRole: string }) {
 
     // Menu para staff
     {
-      name: 'Documentos Públicos',
-      href: '/documents/publics',
-      icon: <FileText className="w-5 h-5" />,
-      role: 'staff'
-    },
-    {
-      name: 'Perfil',
-      href: '/staff/profile',
-      icon: <User className="w-5 h-5" />,
-      role: 'staff'
-    },
-    {
-      name: 'Meus Documentos',
-      href: '/staff/documents/my',
-      icon: <FileText className="w-5 h-5" />,
-      role: 'staff'
-    }, {
       name: 'Novo Documento',
       href: '/staff/documents/new',
       icon: <FileText className="w-5 h-5" />,
@@ -109,7 +92,26 @@ export default function Sidebar({ userRole }: { userRole: string }) {
       href: '/staff/dashboard',
       icon: <User className="w-5 h-5" />,
       role: 'staff'
-    }
+    },
+    {
+      name: 'Meus Documentos',
+      href: '/staff/documents/my',
+      icon: <FileText className="w-5 h-5" />,
+      role: 'staff'
+    },
+    {
+      name: 'Documentos Públicos',
+      href: '/staff/documents/publics',
+      icon: <FileText className="w-5 h-5" />,
+      role: 'staff'
+    },
+    {
+      name: 'Perfil',
+      href: '/staff/profile',
+      icon: <User className="w-5 h-5" />,
+      role: 'staff'
+    },
+
   ];
 
   const filteredMenu = menuItems.filter(item =>

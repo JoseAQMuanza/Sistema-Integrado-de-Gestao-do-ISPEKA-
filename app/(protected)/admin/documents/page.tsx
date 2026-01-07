@@ -132,7 +132,6 @@ export default function TodosDocumentosPage() {
   };
 
   // Função para baixar arquivo
-  // Versão básica que corrige problemas comuns de path
   const downloadFile = async (documentoId: string) => {
   console.log('Iniciando download para documento:', documentoId);
   
@@ -215,62 +214,6 @@ export default function TodosDocumentosPage() {
     alert(`Erro: ${error.message || 'Erro desconhecido ao baixar arquivo'}`);
   }
 };
-
-// Função para forçar download com URL
-const forceDownload = (url: string, fileName: string) => {
-  const link = document.createElement('a');
-  link.href = url;
-  link.download = fileName;
-  link.target = '_blank';
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-};
-
-// Função alternativa usando fetch
-const downloadFileAlt = async (documentoId: string) => {
-  try {
-    // Buscar arquivo
-    const { data: arquivo, error } = await supabase
-      .from('documento_arquivo')
-      .select('path, nome_original')
-      .eq('documento_id', documentoId)
-      .single();
-
-    if (error) throw error;
-
-    // Obter URL assinada
-    const { data: signedUrl, error: urlError } = await supabase.storage
-      .from('sgid_ispeka_files')
-      .createSignedUrl(arquivo.path, 60);
-
-    if (urlError) throw urlError;
-
-    // Usar fetch para baixar
-    const response = await fetch(signedUrl.signedUrl);
-    if (!response.ok) throw new Error('Falha no fetch');
-
-    const blob = await response.blob();
-    const downloadUrl = window.URL.createObjectURL(blob);
-    
-    const link = document.createElement('a');
-    link.href = downloadUrl;
-    link.download = arquivo.nome_original;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    
-    window.URL.revokeObjectURL(downloadUrl);
-
-  } catch (error: any) {
-    console.error('Erro:', error);
-    alert(`Falha: ${error.message}`);
-  }
-};
-
-
-
-
 
   // Função para visualizar documento
   const visualizarDocumento = (documentoId: string) => {

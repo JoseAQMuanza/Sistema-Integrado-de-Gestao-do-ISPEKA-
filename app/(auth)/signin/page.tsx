@@ -132,17 +132,6 @@ export default function SignIn() {
             </div>
           </div>
 
-          <div className="flex items-center justify-between">
-            <div className="text-sm">
-              <a 
-                href="/recuperar-senha" 
-                className="font-medium text-orange-600 hover:text-orange-500"
-              >
-                Esqueceu a senha?
-              </a>
-            </div>
-          </div>
-
           <button
             type="submit"
             disabled={loading}

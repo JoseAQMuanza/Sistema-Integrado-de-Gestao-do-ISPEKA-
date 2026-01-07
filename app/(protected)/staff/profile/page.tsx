@@ -28,12 +28,6 @@ export default function PerfilPage() {
   useEffect(() => {
     const loadData = async () => {
       const { data: { user } } = await supabase.auth.getUser();
-
-      if (!user) {
-        router.push('/login');
-        return;
-      }
-
       const { data: usuario } = await supabase
         .from('usuario')
         .select(`
@@ -41,7 +35,7 @@ export default function PerfilPage() {
           cargo(nome),
           role(name)
         `)
-        .eq('auth_user_id', user.id)
+        .eq('auth_user_id', user?.id)
         .single();
 
       if (!usuario) {
